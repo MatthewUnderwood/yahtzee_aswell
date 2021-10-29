@@ -21,6 +21,24 @@ def four_of_a_kind_check(dicecount):
     else:
         return "false"
 
+def check_for_large_striaght(dice_rolls):
+    if 1 in dice_rolls and 2 in dice_rolls and 3 in dice_rolls and 4 in dice_rolls and 5 in dice_rolls:
+        return "true"
+    elif 6 in dice_rolls and 2 in dice_rolls and 3 in dice_rolls and 4 in dice_rolls and 5 in dice_rolls:
+        return "true"
+    else:
+        return "false"
+
+def check_for_small_striaght(dice_rolls):
+    if 1 in dice_rolls and 2 in dice_rolls and 3 in dice_rolls and 4 in dice_rolls:
+        return "true"
+    elif 2 in dice_rolls and 3 in dice_rolls and 4 in dice_rolls and 5 in dice_rolls:
+        return "true"
+    elif 6 in dice_rolls and 3 in dice_rolls and 4 in dice_rolls and 5 in dice_rolls:
+        return "true"
+    else:
+        return "false"
+
 
 # for idx, val in enumerate(dice):
 #     dice[idx] = random.randrange(1,6)
