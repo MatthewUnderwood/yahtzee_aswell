@@ -1,6 +1,6 @@
 import random
 
-dice = [1,2,1,1,1]
+dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0]
 
 def full_house_check(dice):
@@ -17,6 +17,12 @@ def yahtzee_check(dicecount):
 
 def four_of_a_kind_check(dicecount):
     if 4 in dicecount:
+        return "true"
+    else:
+        return "false"
+
+def three_of_a_kind_check(dicecount):
+    if 3 in dicecount:
         return "true"
     else:
         return "false"
@@ -49,6 +55,7 @@ for idx, val in enumerate(dice):
 
 print (yahtzee_check(dicecount))
 print (four_of_a_kind_check(dicecount))
+print (three_of_a_kind_check(dice))
 print (full_house_check(dicecount))
 print (check_for_large_striaght(dice))
 print (check_for_small_striaght(dice))
