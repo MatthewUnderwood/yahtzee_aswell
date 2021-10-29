@@ -40,12 +40,15 @@ def check_for_small_striaght(dice_rolls):
         return "false"
 
 
-# for idx, val in enumerate(dice):
-#     dice[idx] = random.randrange(1,6)
-#     print (dice)
+for idx, val in enumerate(dice):
+    dice[idx] = random.randrange(1,6)
+    print (dice)
 
 for idx, val in enumerate(dice):
     dicecount[idx] = dice.count(idx + 1)
 
-
+print (yahtzee_check(dicecount))
 print (four_of_a_kind_check(dicecount))
+print (full_house_check(dicecount))
+print (check_for_large_striaght(dice))
+print (check_for_small_striaght(dice))
