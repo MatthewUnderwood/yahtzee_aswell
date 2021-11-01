@@ -2,7 +2,8 @@ import random
 
 dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0]
-scorecare = [0,0,0,0,0,0,35,0,0,0,0,0,0,0,0]
+scorecare = [0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+rolls_left = 13
 
 
 def full_house_check(dice):
@@ -53,25 +54,33 @@ def reroll_dice(num):
             dice[idx] = random.randrange(1,6)
     return dice
 
+while rolls_left != 0:
+    for idx, val in enumerate(dice):
+        dice[idx] = random.randrange(1,6)
 
-for idx, val in enumerate(dice):
-    dice[idx] = random.randrange(1,6)
+    print ("this is the inital roll\n", dice)
+    user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
+
+    for  i in range(user_amount_of_rerolls):
+        user_input = int(input("which dice would you like to reroll"))
+        reroll_dice(user_input)
+
     print (dice)
 
-for idx, val in enumerate(dice):
-    dicecount[idx] = dice.count(idx + 1)
+    user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
+
+    for  i in range(user_amount_of_rerolls):
+        user_input = int(input("which dice would you like to reroll"))
+        reroll_dice(user_input)
+
+    print (dice)
+    rolls_left = rolls_left - 1
 
 
-user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
 
-for  i in range(user_amount_of_rerolls):
-    user_input = int(input("which dice would you like to reroll"))
-    reroll_dice(user_input)
-
-print (dice)
-# print (yahtzee_check(dicecount))
-# print (four_of_a_kind_check(dicecount))
-# print (three_of_a_kind_check(dice))
-# print (full_house_check(dicecount))
-# print (check_for_large_striaght(dice))
-# print (check_for_small_striaght(dice))
+    print (yahtzee_check(dicecount))
+    print (four_of_a_kind_check(dicecount))
+    print (three_of_a_kind_check(dice))
+    print (full_house_check(dicecount))
+    print (check_for_large_striaght(dice))
+    print (check_for_small_striaght(dice))
