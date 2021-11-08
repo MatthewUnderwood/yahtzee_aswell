@@ -2,6 +2,7 @@ import random
 
 dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0,0]
+yahtzee_count = 0
 
 #           [ 1, 2, 3, 4, 5, 6, 3 of a kind, 4 of a kind, fullhouse, Sstright, Lstright, yahtzee, chance]
 scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
@@ -57,39 +58,53 @@ def small_striaght_check(dicecount, dice):
 
 def hightest_score_algo(dicecount, dice, scorecard):
     score = 0
+
+    # check to see if we have a yahtzee
     if  score < yahtzee_check(dicecount, dice):
-        score = yahtzee_check(dicecount, dice)
+        yahtzee_count = yahtzee_count + 1
         if scorecard[11] < 0:
             scorecard[11] = yahtzee_check(dicecount, dice)
-    if  score < four_of_a_kind_check(dicecount, dice):
-        score = four_of_a_kind_check(dicecount, dice)
-        if scorecard[7] < 0:
-            scorecard[7] = four_of_a_kind_check(dicecount, dice)
-    if  score < three_of_a_kind_check(dicecount, dice):
-        if scorecard[6] < 0:
-            scorecard[6] = three_of_a_kind_check(dicecount, dice)
-        score = three_of_a_kind_check(dicecount, dice)
+            return
+    #check to see if we have a large straight
     if  score < large_striaght_check(dicecount, dice):
         if scorecard[10] < 0:
             scorecard[10] = large_striaght_check(dicecount, dice)
-        score = large_striaght_check(dicecount, dice)
-    if  score < small_striaght_check(dicecount, dice):
-        if scorecard[9] < 0:
-            scorecard[9] = small_striaght_check(dicecount, dice)
-        score = small_striaght_check(dicecount, dice)
-    if  score < full_house_check(dicecount, dice):
-        if scorecard[8] < 0:
-            scorecard[8] = full_house_check(dicecount, dice)
-        score = full_house_check(dicecount, dice)
-    else:
-        scorecard[12] = sum(dice)
-        score = sum(dice)
+            return
+    # try and save the highest value roll in top
+    if 5 in dicecount:
+        yahtzee_count = yahtzee_count + 1
+        for idx, val in enumerate(dicecount):
+            if val == 5:
+                scorecard[idx] = (idx + 1) * 5
+                return
+    if 4 in dicecount:
+        for idx, val in enumerate(dicecount):
+            if val == 4:
+                scorecard[idx] = (idx + 1) * 4
+                return
+    if 3 in dicecount:
+        for idx, val in enumerate(dicecount):
+            if val == 3:
+                scorecard[idx] = (idx + 1) * 3
+                return
+
+    # if  score < small_striaght_check(dicecount, dice):
+    #     if scorecard[9] < 0:
+    #         scorecard[9] = small_striaght_check(dicecount, dice)
+    #     score = small_striaght_check(dicecount, dice)
+    # if  score < full_house_check(dicecount, dice):
+    #     if scorecard[8] < 0:
+    #         scorecard[8] = full_house_check(dicecount, dice)
+    #     score = full_house_check(dicecount, dice)
+    # else:
+    #     scorecard[12] = sum(dice)
+    #     score = sum(dice)
     return score
 
 def reroll_dice(num):
     for idx, val in enumerate(dice):
         if idx + 1 == num:
-            dice[idx] = random.randrange(1,6)
+            dice[idx] = random.randrange(1,7)
     return dice
 
 def count_dice(dicecount, dice):
@@ -104,7 +119,7 @@ def count_dice(dicecount, dice):
 
 while rolls_left != 0:
     for idx, val in enumerate(dice):
-        dice[idx] = random.randrange(1,6)
+        dice[idx] = random.randrange(1,7)
 
     print ("this is the inital roll\n", dice)
 
