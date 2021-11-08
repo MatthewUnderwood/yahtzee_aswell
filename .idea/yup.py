@@ -2,6 +2,8 @@ import random
 
 dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0,0]
+
+#           [ 1, 2, 3, 4, 5, 6, 3 of a kind, 4 of a kind, fullhouse, Sstright, Lstright, yahtzee, chance]
 scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
 rolls_left = 13
 
@@ -57,29 +59,30 @@ def hightest_score_algo(dicecount, dice, scorecard):
     score = 0
     if  score < yahtzee_check(dicecount, dice):
         score = yahtzee_check(dicecount, dice)
-        if scorecard[6] < 0:
-            scorecard[6] = yahtzee_check(dicecount, dice)
+        if scorecard[11] < 0:
+            scorecard[11] = yahtzee_check(dicecount, dice)
     if  score < four_of_a_kind_check(dicecount, dice):
         score = four_of_a_kind_check(dicecount, dice)
         if scorecard[7] < 0:
             scorecard[7] = four_of_a_kind_check(dicecount, dice)
     if  score < three_of_a_kind_check(dicecount, dice):
-        if scorecard[8] < 0:
-            scorecard[8] = three_of_a_kind_check(dicecount, dice)
+        if scorecard[6] < 0:
+            scorecard[6] = three_of_a_kind_check(dicecount, dice)
         score = three_of_a_kind_check(dicecount, dice)
     if  score < large_striaght_check(dicecount, dice):
-        if scorecard[9] < 0:
-            scorecard[9] = large_striaght_check(dicecount, dice)
+        if scorecard[10] < 0:
+            scorecard[10] = large_striaght_check(dicecount, dice)
         score = large_striaght_check(dicecount, dice)
     if  score < small_striaght_check(dicecount, dice):
-        if scorecard[10] < 0:
-            scorecard[10] = small_striaght_check(dicecount, dice)
+        if scorecard[9] < 0:
+            scorecard[9] = small_striaght_check(dicecount, dice)
         score = small_striaght_check(dicecount, dice)
     if  score < full_house_check(dicecount, dice):
-        if scorecard[11] < 0:
-            scorecard[11] = full_house_check(dicecount, dice)
+        if scorecard[8] < 0:
+            scorecard[8] = full_house_check(dicecount, dice)
         score = full_house_check(dicecount, dice)
     else:
+        scorecard[12] = sum(dice)
         score = sum(dice)
     return score
 
