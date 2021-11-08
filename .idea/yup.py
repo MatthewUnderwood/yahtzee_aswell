@@ -56,7 +56,7 @@ def small_striaght_check(dicecount, dice):
 ########################################################################
 ########################################################################
 
-def hightest_score_algo(dicecount, dice, scorecard):
+def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
     score = 0
 
     # check to see if we have a yahtzee
@@ -74,31 +74,45 @@ def hightest_score_algo(dicecount, dice, scorecard):
     if 5 in dicecount:
         yahtzee_count = yahtzee_count + 1
         for idx, val in enumerate(dicecount):
-            if val == 5:
+            if val == 5 and scorecard[idx] < 0:
                 scorecard[idx] = (idx + 1) * 5
                 return
     if 4 in dicecount:
         for idx, val in enumerate(dicecount):
-            if val == 4:
+            if val == 4 and scorecard[idx] < 0:
                 scorecard[idx] = (idx + 1) * 4
                 return
     if 3 in dicecount:
         for idx, val in enumerate(dicecount):
-            if val == 3:
+            if val == 3 and scorecard[idx] < 0:
                 scorecard[idx] = (idx + 1) * 3
                 return
 
-    # if  score < small_striaght_check(dicecount, dice):
-    #     if scorecard[9] < 0:
-    #         scorecard[9] = small_striaght_check(dicecount, dice)
-    #     score = small_striaght_check(dicecount, dice)
-    # if  score < full_house_check(dicecount, dice):
-    #     if scorecard[8] < 0:
-    #         scorecard[8] = full_house_check(dicecount, dice)
-    #     score = full_house_check(dicecount, dice)
-    # else:
-    #     scorecard[12] = sum(dice)
-    #     score = sum(dice)
+    #check to find the remaining highest score possible and save it
+    if score < sum(dice):
+        score = sum(dice)
+    if  score < small_striaght_check(dicecount, dice):
+        if scorecard[9] < 0:
+            scorecard[9] = small_striaght_check(dicecount, dice)
+            return
+        score = small_striaght_check(dicecount, dice)
+    if  score < full_house_check(dicecount, dice):
+        if scorecard[8] < 0:
+            scorecard[8] = full_house_check(dicecount, dice)
+            return
+        score = full_house_check(dicecount, dice)
+    if 4 in dicecount:
+        for idx, val in enumerate(dicecount):
+            if val == 4 and scorecard[7] < 0:
+                scorecard[7] = sum(dice)
+                return
+    if 3 in dicecount:
+        for idx, val in enumerate(dicecount):
+            if val == 3 and scorecard[6] < 0:
+                scorecard[6] = sum(dice)
+                return
+    elif scorecard[12] < 0:
+        scorecard[12] = sum(dice)
     return score
 
 def reroll_dice(num):
@@ -131,5 +145,5 @@ while rolls_left != 0:
         print (dice)
 
     count_dice(dicecount, dice)
-    print (hightest_score_algo(dicecount, dice, scorecard))
+    print (hightest_score_algo(dicecount, dice, scorecard, yahtzee_count))
     print (scorecard)
