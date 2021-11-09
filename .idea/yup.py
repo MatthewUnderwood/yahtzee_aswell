@@ -113,6 +113,12 @@ def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
                 return
     elif scorecard[12] < 0:
         scorecard[12] = sum(dice)
+        return
+    else:
+        for i in scorecard:
+            if scorecard[i] < 0:
+                scorecard[i] = 0
+                return
     return score
 
 def reroll_dice(num):
@@ -131,7 +137,7 @@ def count_dice(dicecount, dice):
 ########################################################################
 
 
-while rolls_left != 0:
+for thirteen_rolls in range(13):
     for idx, val in enumerate(dice):
         dice[idx] = random.randrange(1,7)
 
