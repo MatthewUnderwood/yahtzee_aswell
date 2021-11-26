@@ -111,11 +111,38 @@ def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
             if val == 3 and scorecard[6] < 0:
                 scorecard[6] = sum(dice)
                 return
-    elif scorecard[12] < 0:
+    if scorecard[12] < 0:
         scorecard[12] = sum(dice)
         return
+    #if it gets here it will add a zero to the score
     else:
-        for i in scorecard:
+        for i in range(6):
+            short_sum = short_sum + scorecard[i]
+            if short_sum > 53:
+                ## put largest number you can in 1-6
+        if scorecard[7] < 0:
+            scorecard[7] = 0
+            return
+        if scorecard[11] < 0:
+            scorecard[11] = 0
+            return
+        if scorecard[10] < 0:
+            scorecard[10] = 0
+            return
+        if scorecard[8] < 0:
+            scorecard[8] = 0
+            return
+        if scorecard[6] < 0:
+            scorecard[6] = 0
+            return
+        if scorecard[9] < 0:
+            scorecard[9] = 0
+            return
+        if scorecard[7] < 0:
+            scorecard[7] = 0
+            return
+        # this needs to be changed to put the highest 1-6 score instead
+        for i in range(13):
             if scorecard[i] < 0:
                 scorecard[i] = 0
                 return
