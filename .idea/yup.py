@@ -2,7 +2,8 @@ import random
 
 dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0,0]
-yahtzee_count = 0
+extra_yahtzees = 0
+score_total = 0
 
 #           [ 1, 2, 3, 4, 5, 6, 3 of a kind, 4 of a kind, fullhouse, Sstright, Lstright, yahtzee, chance]
 scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
@@ -56,12 +57,11 @@ def small_striaght_check(dicecount, dice):
 ########################################################################
 ########################################################################
 
-def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
+def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
     score = 0
 
     # check to see if we have a yahtzee
     if  score < yahtzee_check(dicecount, dice):
-        yahtzee_count = yahtzee_count + 1
         if scorecard[11] < 0:
             scorecard[11] = yahtzee_check(dicecount, dice)
             return
@@ -72,7 +72,7 @@ def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
             return
     # try and save the highest value roll in top
     if 5 in dicecount:
-        yahtzee_count = yahtzee_count + 1
+        extra_yahtzees = extra_yahtzees + 1
         for idx, val in enumerate(dicecount):
             if val == 5 and scorecard[idx] < 0:
                 scorecard[idx] = (idx + 1) * 5
@@ -114,12 +114,19 @@ def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
     if scorecard[12] < 0:
         scorecard[12] = sum(dice)
         return
-    #if it gets here it will add a zero to the score
+    #if it gets here it will add a zero or sub optimal top to the score
     else:
+        short_sum = 0;
         for i in range(6):
             short_sum = short_sum + scorecard[i]
             if short_sum > 53:
-                ## put largest number you can in 1-6
+                for idx, val in enumerate(dicecount):
+                    if val == 2 and scorecard[idx] < 0:
+                        scorecard[idx] = (idx + 1) * 5
+                        return
+                    if val == 1 and scorecard[idx] < 0:
+                        scorecard[idx] = (idx + 1) * 5
+                        return
         if scorecard[7] < 0:
             scorecard[7] = 0
             return
@@ -145,6 +152,7 @@ def hightest_score_algo(dicecount, dice, scorecard, yahtzee_count):
         for i in range(13):
             if scorecard[i] < 0:
                 scorecard[i] = 0
+                print ("this should not have happened")
                 return
     return score
 
@@ -163,7 +171,6 @@ def count_dice(dicecount, dice):
 ########################################################################
 ########################################################################
 
-
 for thirteen_rolls in range(13):
     for idx, val in enumerate(dice):
         dice[idx] = random.randrange(1,7)
@@ -178,5 +185,14 @@ for thirteen_rolls in range(13):
         print (dice)
 
     count_dice(dicecount, dice)
-    print (hightest_score_algo(dicecount, dice, scorecard, yahtzee_count))
+    print (hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees))
     print (scorecard)
+
+
+short_sum = 0
+for i in range(6):
+    short_sum = short_sum + scorecard[i]
+if short_sum > 52:
+    score_total = score_total + 35
+score_total = score_total + sum(scorecard) + (extra_yahtzees * 100)
+print("your total score is " + str(score_total))
