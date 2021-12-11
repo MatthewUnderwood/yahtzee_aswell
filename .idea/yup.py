@@ -169,8 +169,30 @@ def count_dice(dicecount, dice):
 def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
     if 5 in dicecount:
         return
-    if 4 in dicecount:
+    elif 4 in dicecount:
         reroll_dice(int(dice.index(dicecount.index(1) + 1)))
+    elif 3 in dicecount:
+        if 2 in dicecount and scorecard[8] < 0:
+            return
+        else:
+            reroll_dice(int(dice.index(dicecount.index(2) + 1)))
+            return
+        if 1 in dicecount:
+            reroll_dice(int(dice.index(dicecount.index(1) + 1)))
+            reroll_dice(int(dice.index(dicecount.index(1, dicecount.index(1) + 1) + 1)))
+            return
+    elif 2 in dicecount:
+        reroll_dice(int(dice.index(dicecount.index(1) + 1)))
+        reroll_dice(int(dice.index(dicecount.index(1, dicecount.index(1) + 1) + 1)))
+        reroll_dice(int(dice.index(dicecount.index(1, dicecount.index(dicecount.index(1)) + 1) + 1)))
+        return
+    else:
+        for i in range(6):
+            reroll_dice(i+1)
+        return
+
+
+
 
 
 
@@ -183,16 +205,18 @@ for thirteen_rolls in range(13):
     for idx, val in enumerate(dice):
         dice[idx] = random.randrange(1,7)
 
-    print ("this is the inital roll\n", dice)
+    print ("this is the inital roll\n",dice)
+    # count_dice(dicecount, dice)
 
     for y in range(2):
-        user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
-        for  i in range(user_amount_of_rerolls):
-            user_input = int(input("which dice would you like to reroll"))
-            reroll_dice(user_input)
-        print (dice)
+        # user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
+        # for  i in range(user_amount_of_rerolls):
+        #     user_input = int(input("which dice would you like to reroll"))
+        #     reroll_dice(user_input)
+        # print (dice)
+        rolling_algo(dicecount, dice, scorecard, extra_yahtzees)
+        print(dice)
 
-    count_dice(dicecount, dice)
     print (hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees))
     print (scorecard)
 
