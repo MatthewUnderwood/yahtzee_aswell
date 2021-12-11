@@ -4,7 +4,7 @@ dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0,0]
 extra_yahtzees = 0
 score_total = 0
-
+#           [ 0, 1, 2, 3, 4, 5, 6----------, 7----------, 8--------, 9-------, 10------, 11-----, 12----]
 #           [ 1, 2, 3, 4, 5, 6, 3 of a kind, 4 of a kind, fullhouse, Sstright, Lstright, yahtzee, chance]
 scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
 rolls_left = 13
@@ -165,6 +165,14 @@ def reroll_dice(num):
 def count_dice(dicecount, dice):
     for idx, val in enumerate(dicecount):
         dicecount[idx] = dice.count(idx + 1)
+
+def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
+    if 5 in dicecount:
+        return
+    if 4 in dicecount:
+        reroll_dice(int(dice.index(dicecount.index(1) + 1)))
+
+
 
 # program starts
 ########################################################################
