@@ -176,19 +176,19 @@ def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
             return
         elif 2 in dicecount and scorecard[8] > 0:
             reroll_dice(int(dice.index(dicecount.index(2) + 1)))
-            reroll_dice(int(dice.index(dicecount.index(dicecount.index(2) + 1) + 1)))
+            reroll_dice(int(dice.index(dicecount.index(2 , dicecount.index(2)) + 1)))
+            return
         else:
             reroll_dice(int(dice.index(dicecount.index(1) + 1)))
-            reroll_dice(int(dice.index(dicecount.index(dicecount.index(1) + 1) + 1)))
+            reroll_dice(int(dice.index(dicecount.index(1 , dicecount.index(1) + 1) + 1)))
             return
         if 1 in dicecount:
-            # reroll_dice(int(dice.index(dicecount.index(1) + 1)))
-            # reroll_dice(int(dice.index(dicecount.index(1, dicecount.index(1) + 1) + 1)))
+            reroll_dice(int(dice.index(dicecount.index(1) + 1)))
+            reroll_dice(int(dice.index(dicecount.index(1 , dicecount.index(1) + 1) + 1)))
             return
-    elif 2 in dicecount:
+    elif 2 in dicecount and :
         # reroll_dice(int(dice.index(dicecount.index(1) + 1)))
-        # reroll_dice(int(dice.index(dicecount.index(1, dicecount.index(1) + 1) + 1)))
-        # reroll_dice(int(dice.index(dicecount.index(1, dicecount.index(dicecount.index(1)) + 1) + 1)))
+        # reroll_dice(int(dice.index(dicecount.index(1 , dicecount.index(1) + 1) + 1)))
         return
     else:
         for i in range(6):
@@ -209,7 +209,8 @@ for thirteen_rolls in range(13):
     for idx, val in enumerate(dice):
         dice[idx] = random.randrange(1,7)
 
-    print ("this is the inital roll\n",dice)
+    print ("this is the inital roll")
+    print (dice)
     count_dice(dicecount, dice)
 
     for y in range(2):
