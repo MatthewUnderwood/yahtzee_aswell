@@ -159,24 +159,24 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
     return score
 
 def reroll_dice(num, dice):
-    for idx, val in enumerate(dice):
-        if idx + 1 == num:
-            dice[idx] = random.randrange(1,7)
-    return dice
+    if num >= 0 and num <=6:
+        dice[num] = random.randrange(1,7)
 
 def count_dice(dicecount, dice):
     for idx, val in enumerate(dicecount):
         dicecount[idx] = dice.count(idx + 1)
 
-def define_position_of_ones(pos_of_ones, dicecount):
+def define_position_of_ones(pos_of_ones, dicecount, dice):
     for i in range(len(dicecount)):
-        if dicecount[i] == 1:
-            pos_of_ones.append(i)
+        for j in range(len(dice)):
+            if dicecount[i] == 1 and i + 1 == dice[j]:
+                pos_of_ones.append(j)
 
-def define_position_of_twos(pos_of_twos, dicecount):
+def define_position_of_twos(pos_of_twos, dicecount, dice):
     for i in range(len(dicecount)):
-        if dicecount[i] == 2:
-            pos_of_twos.append(i)
+        for j in range(len(dice)):
+            if dicecount[i] == 2 and i + 1 == dice[j]:
+                pos_of_twos.append(j)
 
 def reset_position_of_ones(pos_of_ones):
     pos_of_ones.clear()
@@ -186,12 +186,12 @@ def reset_position_of_twos(pos_of_twos):
 
 def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
     reset_position_of_twos(pos_of_twos)
-    define_position_of_twos(pos_of_twos, dicecount)
+    define_position_of_twos(pos_of_twos, dicecount, dice)
     if 5 in dicecount:
         return
     elif 4 in dicecount:
         reset_position_of_ones(pos_of_ones)
-        define_position_of_ones(pos_of_ones, dicecount)
+        define_position_of_ones(pos_of_ones, dicecount, dice)
         for i in range(len(pos_of_ones)):
             reroll_dice(pos_of_ones[i], dice)
         reset_position_of_ones(pos_of_ones)
@@ -202,43 +202,42 @@ def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
             return
         elif 2 in dicecount and scorecard[8] > 0:
             reset_position_of_twos(pos_of_twos)
-            define_position_of_twos(pos_of_twos, dicecount)
+            define_position_of_twos(pos_of_twos, dicecount, dice)
             for i in range(len(pos_of_twos)):
                 reroll_dice(pos_of_twos[i], dice)
             reset_position_of_twos(pos_of_twos)
             return
-        if 1 in dicecount:
+        else:
             reset_position_of_ones(pos_of_ones)
-            define_position_of_ones(pos_of_ones, dicecount)
+            define_position_of_ones(pos_of_ones, dicecount, dice)
             for i in range(len(pos_of_ones)):
                 reroll_dice(pos_of_ones[i], dice)
             reset_position_of_ones(pos_of_ones)
             return
     elif 2 in dicecount and len(pos_of_twos) > 1:
         reset_position_of_ones(pos_of_ones)
-        define_position_of_ones(pos_of_ones, dicecount)
+        define_position_of_ones(pos_of_ones, dicecount, dice)
         for i in range(5,0,-1):
             if scorecard[i] < 0:
                 if dicecount[i] == 2:
                     reset_position_of_twos(pos_of_twos)
-                    define_position_of_twos(pos_of_twos, dicecount)
-                    reroll_dice(pos_of_ones[0], dice)
+                    define_position_of_twos(pos_of_twos, dicecount, dice)
                     reroll_dice(pos_of_twos[0], dice)
+                    reroll_dice(pos_of_twos[1], dice)
+                    reroll_dice(pos_of_ones[0], dice)
                     reset_position_of_ones(pos_of_ones)
                     reset_position_of_twos(pos_of_twos)
                     return
-        return
     elif 2 in dicecount and len(pos_of_twos) == 1:
         for i in range(5,0,-1):
             if scorecard[i] < 0:
                 if dicecount[i] == 2:
                     reset_position_of_ones(pos_of_ones)
-                    define_position_of_ones(pos_of_ones, dicecount)
+                    define_position_of_ones(pos_of_ones, dicecount, dice)
                     for i in range(len(pos_of_ones)):
                         reroll_dice(pos_of_ones[i], dice)
                     reset_position_of_ones(pos_of_ones)
                     return
-        return
     else:
         for i in range(5):
             reroll_dice(i, dice)
