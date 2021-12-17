@@ -61,26 +61,33 @@ def small_striaght_check(dicecount, dice):
 def sub_optimal_score(dicecount, dice, scorecard):
     short_sum = 0;
     for i in range(6):
-        short_sum = short_sum + scorecard[i]
-        if short_sum > 53:
-            for idx, val in enumerate(dicecount):
-                if val == 2 and scorecard[idx] < 0:
-                    scorecard[idx] = (idx + 1) * 2
-                    return
-                if val == 1 and scorecard[idx] < 0:
-                    scorecard[idx] = (idx + 1)
-                    return
+        if scorecard[i] >= 0:
+            short_sum = short_sum + scorecard[i]
+            if short_sum > 53:
+                for idx, val in enumerate(dicecount):
+                    if val == 2 and scorecard[idx] < 0:
+                        scorecard[idx] = (idx + 1) * 2
+                        return
+                    if val == 1 and scorecard[idx] < 0:
+                        scorecard[idx] = (idx + 1)
+                        return
     if scorecard[7] < 0:
         scorecard[7] = 0
         return
     elif scorecard[0] < 0:
         scorecard[0] = dicecount[0]
         return
+    elif scorecard[1] < 0 and dicecount[1] != 0:
+        scorecard[1] = dicecount[1] * 2
+        return
     elif scorecard[11] < 0:
         scorecard[11] = 0
         return
     elif scorecard[10] < 0:
         scorecard[10] = 0
+        return
+    elif scorecard[1] < 0:
+        scorecard[1] = dicecount[1] * 2
         return
     elif scorecard[8] < 0:
         scorecard[8] = 0
@@ -95,9 +102,9 @@ def sub_optimal_score(dicecount, dice, scorecard):
         scorecard[7] = 0
         return
     for i in range(13):
-        if scorecard[i] < 0 and i < 6:
+        if scorecard[i] < 0 and i < 5:
             scorecard[i] = (i + 1) * dicecount[i]
-        elif scorecard[i] < 0 and i > 6:
+        elif scorecard[i] < 0 and i > 5:
             scorecard[i] = 0
         else:
             print ("this should not have happened")
@@ -167,7 +174,10 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
             if val == 3 and scorecard[idx] < 0:
                 scorecard[idx] = (idx + 1) * 3
                 return
-        if scorecard[6] < 0:
+        if (scorecard[8] < 0 and sum(dice) < 25) or (scorecard[8] < 0 and scorecard[12] >= 0):
+            scorecard[8] = 25
+            return
+        elif scorecard[6] < 0:
             scorecard[6] = sum(dice)
             return
         elif scorecard[12] < 0:
@@ -179,9 +189,6 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
             return
     elif  small_striaght_check(dicecount, dice) > 0 and scorecard[9] < 0:
         scorecard[9] = small_striaght_check(dicecount, dice)
-        return
-    elif  full_house_check(dicecount, dice) > 0 and scorecard[8] < 0:
-        scorecard[8] = full_house_check(dicecount, dice)
         return
     elif scorecard[12] < 0:
         scorecard[12] = sum(dice)
@@ -249,12 +256,11 @@ def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
         reroll_dice(pos_of_ones[0], dice)
     elif small_striaght_check(dicecount, dice) > 0 and scorecard[9] < 0:
         return
-    elif 3 in dicecount:
+    elif 3 in dicecount and (scorecard[11] != 0 or scorecard[8] < 0 or scorecard[7] < 0 or scorecard[6] < 0 or scorecard[dicecount.index(3)] < 0):
         #take the full house since nothing else is avaiable
-        if 2 in dicecount and scorecard[8] < 0 and scorecard[11] == 0 and scorecard[dicecount.index(3)] > 0:
+        if 2 in dicecount and scorecard[8] < 0 and scorecard[7] >= 0 and scorecard[6] >= 0 and scorecard[dicecount.index(3)] >= 0:
             return
-        #roll if fullhouse is already taken or we have a yahtzee or the 3 is not taken up top
-        elif (2 in dicecount) and (scorecard[11] > 0 or scorecard[7] < 0 or scorecard[6] < 0 or scorecard[dicecount.index(3)] < 0):
+        elif (2 in dicecount) and (scorecard[11] < 0 or scorecard[7] < 0 or scorecard[6] < 0 or scorecard[dicecount.index(3)] < 0):
             for i in range(len(pos_of_twos)):
                 reroll_dice(pos_of_twos[i], dice)
             return
@@ -262,24 +268,61 @@ def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
             for i in range(len(pos_of_ones)):
                 reroll_dice(pos_of_ones[i], dice)
             return
-    elif 2 in dicecount and len(pos_of_twos) > 2:
+    elif (2 in dicecount and len(pos_of_twos) > 2) and (scorecard[dicecount.index(2)] < 0 or scorecard[dicecount.index(2, pos_of_twos[1])] < 0 or scorecard[7] < 0 or scorecard[6] < 0):
         for i in range(5,0,-1):
             if scorecard[i] < 0 and dicecount[i] == 2:
                 reroll_dice(pos_of_ones[0], dice)
                 if dice[dicecount.index(2)] == ((dicecount[i] / 2) * i):
                     reroll_dice(pos_of_twos[2], dice)
                     reroll_dice(pos_of_twos[3], dice)
+                    return
                 else:
                     reroll_dice(pos_of_twos[0], dice)
                     reroll_dice(pos_of_twos[1], dice)
-                return
-    elif (2 in dicecount and len(pos_of_twos) == 2) and (scorecard[dicecount.index(2)] < 0 or scorecard[6] < 0 or scorecard[7] < 0):
-        for i in range(5,0,-1):
-            if scorecard[i] < 0:
-                if dicecount[i] == 2:
-                    for i in range(len(pos_of_ones)):
-                        reroll_dice(pos_of_ones[i], dice)
                     return
+            else:
+                reroll_dice(pos_of_ones[0], dice)
+                reroll_dice(pos_of_twos[0], dice)
+                reroll_dice(pos_of_twos[1], dice)
+                return
+    elif (2 in dicecount and len(pos_of_twos) > 2) and (scorecard[dicecount.index(2)] >= 0 or scorecard[dicecount.index(2, pos_of_twos[1])] >= 0) and (scorecard[8] < 0):
+        reroll_dice(pos_of_ones[0], dice)
+        return
+    elif (2 in dicecount and len(pos_of_twos) == 2) and (scorecard[dicecount.index(2)] < 0 or scorecard[6] < 0 or scorecard[7] < 0):
+        for i in range(len(pos_of_ones)):
+            reroll_dice(pos_of_ones[i], dice)
+        return
+
+    elif scorecard[5] < 0 and dicecount[5] == 1:
+        for i in range(5):
+            if dice[i] != 6:
+                reroll_dice(i, dice)
+        return
+    elif scorecard[4] < 0 and dicecount[4] == 1:
+        for i in range(5):
+            if dice[i] != 5:
+                reroll_dice(i, dice)
+        return
+    elif scorecard[3] < 0 and dicecount[3] == 1:
+        for i in range(5):
+            if dice[i] != 4:
+                reroll_dice(i, dice)
+        return
+    elif scorecard[2] < 0 and dicecount[2] == 1:
+        for i in range(5):
+            if dice[i] != 3:
+                reroll_dice(i, dice)
+        return
+    elif scorecard[1] < 0 and dicecount[1] == 1:
+        for i in range(5):
+            if dice[i] != 2:
+                reroll_dice(i, dice)
+        return
+    elif scorecard[0] < 0 and dicecount[0] == 1:
+        for i in range(5):
+            if dice[i] != 1:
+                reroll_dice(i, dice)
+        return
     else:
         for i in range(5):
             reroll_dice(i, dice)
