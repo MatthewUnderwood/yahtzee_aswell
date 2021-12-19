@@ -1,6 +1,7 @@
 import random
+from contextlib import redirect_stdout
 
-dice = [3,3,3,4,3]
+dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0,0]
 extra_yahtzees = [0]
 #           [ 0, 1, 2, 3, 4, 5, 6----------, 7----------, 8--------, 9-------, 10------, 11-----, 12----]
@@ -58,7 +59,7 @@ def small_striaght_check(dicecount, dice):
 ########################################################################
 ########################################################################
 
-def sub_optimal_score(dicecount, dice, scorecard):
+def matthews_sub_optimal_score(dicecount, dice, scorecard):
     short_sum = 0;
     for i in range(6):
         if scorecard[i] >= 0:
@@ -111,7 +112,7 @@ def sub_optimal_score(dicecount, dice, scorecard):
         return
 
 
-def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
+def matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees):
     # check to see if we have a yahtzee
     if  yahtzee_check(dicecount, dice) > 0 and scorecard[11] < 0:
         scorecard[11] = yahtzee_check(dicecount, dice)
@@ -149,7 +150,7 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
                     return
         else:
             print("something bad happened 5")
-            sub_optimal_score(dicecount, dice, scorecard)
+            matthews_sub_optimal_score(dicecount, dice, scorecard)
             return
     elif 4 in dicecount:
         for idx, val in enumerate(dicecount):
@@ -167,7 +168,7 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
             return
         else:
             print("something bad happened 4")
-            sub_optimal_score(dicecount, dice, scorecard)
+            matthews_sub_optimal_score(dicecount, dice, scorecard)
             return
     elif 3 in dicecount:
         for idx, val in enumerate(dicecount):
@@ -185,7 +186,7 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
             return
         else:
             print("something bad happened 3")
-            sub_optimal_score(dicecount, dice, scorecard)
+            matthews_sub_optimal_score(dicecount, dice, scorecard)
             return
     elif  small_striaght_check(dicecount, dice) > 0 and scorecard[9] < 0:
         scorecard[9] = small_striaght_check(dicecount, dice)
@@ -198,7 +199,7 @@ def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
     #if it gets here it will add a zero or sub optimal top to the score
     else:
         print("how did I get here")
-        sub_optimal_score(dicecount, dice, scorecard)
+        matthews_sub_optimal_score(dicecount, dice, scorecard)
     ############################################################
     ############################################################
     ############################################################
@@ -229,7 +230,7 @@ def reset_position_of_ones(pos_of_ones):
 def reset_position_of_twos(pos_of_twos):
     pos_of_twos.clear()
 
-def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
+def matthews_rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
 
     reset_position_of_ones(pos_of_ones)
     define_position_of_ones(pos_of_ones, dicecount, dice)
@@ -335,36 +336,42 @@ def rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
 ########################################################################
 ########################################################################
 ########################################################################
-
-for thirteen_rolls in range(13):
-    for idx, val in enumerate(dice):
-        dice[idx] = random.randrange(1,7)
-    dice.sort()
-    print ("this is the inital roll")
-    print (dice)
-    count_dice(dicecount, dice)
-    for i in range(2):
-        # user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
-        # for  i in range(user_amount_of_rerolls):
-        #     user_input = int(input("which dice would you like to reroll"))
-        #     reroll_dice(user_input - 1, dice)
-        # print (dice)
-        rolling_algo(dicecount, dice, scorecard, extra_yahtzees)
+for onethou_rolls in range(500):
+    scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+    extra_yahtzees = [0]
+    for thirteen_rolls in range(13):
+        for idx, val in enumerate(dice):
+            dice[idx] = random.randrange(1,7)
         dice.sort()
-        print(dice)
+        print ("this is the inital roll")
+        print (dice)
         count_dice(dicecount, dice)
-    print (hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees))
-    print (scorecard)
+        for i in range(2):
+            # user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
+            # for  i in range(user_amount_of_rerolls):
+            #     user_input = int(input("which dice would you like to reroll"))
+            #     reroll_dice(user_input - 1, dice)
+            # print (dice)
+            matthews_rolling_algo(dicecount, dice, scorecard, extra_yahtzees)
+            dice.sort()
+            print(dice)
+            count_dice(dicecount, dice)
+        print (matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees))
+        print (scorecard)
 
-score_total = 0
-short_sum = 0
-for i in range(6):
-    short_sum = short_sum + scorecard[i]
-if short_sum > 61:
-    score_total = score_total + 35
-if scorecard[11] != 0:
-    score_total = score_total + sum(scorecard) + (extra_yahtzees[0] * 100)
-else:
-    score_total = score_total + sum(scorecard)
-print("your total score is " + str(score_total))
-print(extra_yahtzees[0])
+    score_total = 0
+    short_sum = 0
+    for i in range(6):
+        short_sum = short_sum + scorecard[i]
+    if short_sum > 62:
+        score_total = score_total + 35
+    if scorecard[11] != 0:
+        score_total = score_total + sum(scorecard) + (extra_yahtzees[0] * 100)
+    else:
+        score_total = score_total + sum(scorecard)
+    print("your total score is " + str(score_total))
+    print(extra_yahtzees[0])
+
+    with open('out.txt', 'a') as f:
+        with redirect_stdout(f):
+            print(str(score_total))
