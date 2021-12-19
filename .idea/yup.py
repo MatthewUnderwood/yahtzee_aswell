@@ -102,13 +102,13 @@ def sub_optimal_score(dicecount, dice, scorecard):
         scorecard[7] = 0
         return
     for i in range(13):
-        if scorecard[i] < 0 and i < 5:
+        if scorecard[i] < 0 and i <= 5:
             scorecard[i] = (i + 1) * dicecount[i]
         elif scorecard[i] < 0 and i > 5:
             scorecard[i] = 0
-        else:
-            print ("this should not have happened")
-            return
+    else:
+        print("this should not have happened")
+        return
 
 
 def hightest_score_algo(dicecount, dice, scorecard, extra_yahtzees):
