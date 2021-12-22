@@ -1,6 +1,12 @@
 import random
 from contextlib import redirect_stdout
 
+
+########################################################################
+########################################################################
+# just declaring the variables and setting up and easy readible scorecard
+########################################################################
+########################################################################
 dice = [0,0,0,0,0]
 dicecount = [0,0,0,0,0,0]
 extra_yahtzees = [0]
@@ -11,7 +17,12 @@ rolls_left = 13
 pos_of_ones = []
 pos_of_twos = []
 
-
+########################################################################
+########################################################################
+# some functions that check for the lower part of the scorecard and is they
+# find it they return the value of that otherwise they return 0
+########################################################################
+########################################################################
 def full_house_check(dicecount, dice):
     if 3 in dicecount and 2 in dicecount:
         return 25
@@ -54,8 +65,43 @@ def small_striaght_check(dicecount, dice):
     else:
         return 0
 
-# end of scoring functions
+
 ########################################################################
+########################################################################
+# some functions define the variables to be used after the roll
+########################################################################
+########################################################################
+
+def reroll_dice(num, dice):
+    if num >= 0 and num <=6:
+        dice[num] = random.randrange(1,7)
+
+def count_dice(dicecount, dice):
+    for idx, val in enumerate(dicecount):
+        dicecount[idx] = dice.count(idx + 1)
+
+def define_position_of_ones(pos_of_ones, dicecount, dice):
+    for i in range(len(dicecount)):
+        for j in range(len(dice)):
+            if dicecount[i] == 1 and i + 1 == dice[j]:
+                pos_of_ones.append(j)
+
+def define_position_of_twos(pos_of_twos, dicecount, dice):
+    for i in range(len(dicecount)):
+        for j in range(len(dice)):
+            if dicecount[i] == 2 and i + 1 == dice[j]:
+                pos_of_twos.append(j)
+
+def reset_position_of_ones(pos_of_ones):
+    pos_of_ones.clear()
+
+def reset_position_of_twos(pos_of_twos):
+    pos_of_twos.clear()
+
+########################################################################
+########################################################################
+# this looks to find the best scoring option of a bad roll ussually taking
+# a zero somewhere on scorecard
 ########################################################################
 ########################################################################
 
@@ -111,6 +157,11 @@ def matthews_sub_optimal_score(dicecount, dice, scorecard):
         print("this should not have happened")
         return
 
+########################################################################
+########################################################################
+# main scoring algo that looks to find a optimal score
+########################################################################
+########################################################################
 
 def matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees):
     # check to see if we have a yahtzee
@@ -121,9 +172,7 @@ def matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees):
     elif  large_striaght_check(dicecount, dice) > 0 and scorecard[10] < 0:
         scorecard[10] = large_striaght_check(dicecount, dice)
         return
-    # try and save the highest value roll in top that is above 3
-    ############################################################
-    ############################################################
+    # check to see if we have a yahtzee that can't be put in the yahtzee scorecard slot
     elif 5 in dicecount:
         for idx, val in enumerate(dicecount):
             if val == 5 and scorecard[idx] < 0:
@@ -152,6 +201,7 @@ def matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees):
             print("something bad happened 5")
             matthews_sub_optimal_score(dicecount, dice, scorecard)
             return
+    # checks to see if we have a 4 and saves it in the best space available
     elif 4 in dicecount:
         for idx, val in enumerate(dicecount):
             if val == 4 and scorecard[idx] < 0:
@@ -170,6 +220,7 @@ def matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees):
             print("something bad happened 4")
             matthews_sub_optimal_score(dicecount, dice, scorecard)
             return
+    #checks to see if we have a 3 of a kind and saves it in the best slot if available
     elif 3 in dicecount:
         for idx, val in enumerate(dicecount):
             if val == 3 and scorecard[idx] < 0:
@@ -202,36 +253,17 @@ def matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees):
         matthews_sub_optimal_score(dicecount, dice, scorecard)
     ############################################################
     ############################################################
-    ############################################################
 
-def reroll_dice(num, dice):
-    if num >= 0 and num <=6:
-        dice[num] = random.randrange(1,7)
 
-def count_dice(dicecount, dice):
-    for idx, val in enumerate(dicecount):
-        dicecount[idx] = dice.count(idx + 1)
-
-def define_position_of_ones(pos_of_ones, dicecount, dice):
-    for i in range(len(dicecount)):
-        for j in range(len(dice)):
-            if dicecount[i] == 1 and i + 1 == dice[j]:
-                pos_of_ones.append(j)
-
-def define_position_of_twos(pos_of_twos, dicecount, dice):
-    for i in range(len(dicecount)):
-        for j in range(len(dice)):
-            if dicecount[i] == 2 and i + 1 == dice[j]:
-                pos_of_twos.append(j)
-
-def reset_position_of_ones(pos_of_ones):
-    pos_of_ones.clear()
-
-def reset_position_of_twos(pos_of_twos):
-    pos_of_twos.clear()
+########################################################################
+########################################################################
+# my rolling algo it looks for dice that are alike (pairs or triples)
+# and rerolls the other dice if a slot in scorecard is open for that roll
+# if it doesn't find any pattern that open it rerolls all the dice
+########################################################################
+########################################################################
 
 def matthews_rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
-
     reset_position_of_ones(pos_of_ones)
     define_position_of_ones(pos_of_ones, dicecount, dice)
     reset_position_of_twos(pos_of_twos)
@@ -332,46 +364,56 @@ def matthews_rolling_algo(dicecount, dice, scorecard, extra_yahtzees):
 
 
 
-# program starts
 ########################################################################
 ########################################################################
+# main program starts
 ########################################################################
-for onethou_rolls in range(500):
-    scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-    extra_yahtzees = [0]
-    for thirteen_rolls in range(13):
-        for idx, val in enumerate(dice):
-            dice[idx] = random.randrange(1,7)
+########################################################################
+# for onethou_rolls in range(500):
+#     scorecard = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+#     extra_yahtzees = [0]
+for thirteen_rolls in range(13):
+    for idx, val in enumerate(dice):
+        dice[idx] = random.randrange(1,7)
+    dice.sort()
+    print ("this is the inital roll")
+    print (dice)
+    count_dice(dicecount, dice)
+    for i in range(2):
+        ########################################################################
+        ########################################################################
+        # this commented out part lets the user acctually pick the dice to roll
+        # instead of letting the algo reroll for you
+        ########################################################################
+        ########################################################################
+        # user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
+        # for  i in range(user_amount_of_rerolls):
+        #     user_input = int(input("which dice would you like to reroll"))
+        #     reroll_dice(user_input - 1, dice)
+        # print (dice)
+        ########################################################################
+        ########################################################################
+        matthews_rolling_algo(dicecount, dice, scorecard, extra_yahtzees)
         dice.sort()
-        print ("this is the inital roll")
-        print (dice)
+        print(dice)
         count_dice(dicecount, dice)
-        for i in range(2):
-            # user_amount_of_rerolls = int(input("how many dice would you like to reroll"))
-            # for  i in range(user_amount_of_rerolls):
-            #     user_input = int(input("which dice would you like to reroll"))
-            #     reroll_dice(user_input - 1, dice)
-            # print (dice)
-            matthews_rolling_algo(dicecount, dice, scorecard, extra_yahtzees)
-            dice.sort()
-            print(dice)
-            count_dice(dicecount, dice)
-        print (matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees))
-        print (scorecard)
+    print (matthews_score_algo(dicecount, dice, scorecard, extra_yahtzees))
+    print (scorecard)
 
-    score_total = 0
-    short_sum = 0
-    for i in range(6):
-        short_sum = short_sum + scorecard[i]
-    if short_sum > 62:
-        score_total = score_total + 35
-    if scorecard[11] != 0:
-        score_total = score_total + sum(scorecard) + (extra_yahtzees[0] * 100)
-    else:
-        score_total = score_total + sum(scorecard)
-    print("your total score is " + str(score_total))
-    print(extra_yahtzees[0])
+score_total = 0
+short_sum = 0
+for i in range(6):
+    short_sum = short_sum + scorecard[i]
+if short_sum > 62:
+    score_total = score_total + 35
+if scorecard[11] != 0:
+    score_total = score_total + sum(scorecard) + (extra_yahtzees[0] * 100)
+else:
+    score_total = score_total + sum(scorecard)
+print("your total score is " + str(score_total))
+print(extra_yahtzees[0])
 
-    with open('out.txt', 'a') as f:
-        with redirect_stdout(f):
-            print(str(score_total))
+    # this saves the score to an out txt file
+    # with open('out.txt', 'a') as f:
+    #     with redirect_stdout(f):
+    #         print(str(score_total))
